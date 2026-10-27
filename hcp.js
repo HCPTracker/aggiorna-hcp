@@ -5,6 +5,7 @@ var GRID = '/Risultati/ShowGrid';
 var DAL_ANNO = 2024;
 var KEY = 'aggiornaHcp.v2';
 if (location.hostname !== HOST) {
+alert('HCP Tracker: ti porto sull\'area riservata Federgolf. Se ti chiede le credenziali, accedi e poi tocca di nuovo HCP Tracker.');
 location.href = 'https://' + HOST + GRID;
 return;
 }
