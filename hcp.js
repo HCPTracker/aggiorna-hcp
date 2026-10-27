@@ -2,7 +2,7 @@
 'use strict';
 var HOST = 'areariservata.federgolf.it';
 var GRID = '/Risultati/ShowGrid';
-var DAL_ANNO = 2024;
+var DAL_ANNO = new Date().getFullYear() - 2;
 var KEY = 'aggiornaHcp.v2';
 if (location.hostname !== HOST) {
 alert('HCP Tracker: ti porto sull\'area riservata Federgolf. Se ti chiede le credenziali, accedi e poi tocca di nuovo HCP Tracker.');
