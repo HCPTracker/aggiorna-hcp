@@ -100,7 +100,7 @@ function salvati() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'
 var dati, avviso = '', wait = null;
 try {
 wait = document.createElement('div');
-wait.textContent = 'Aggiorna HCP: leggo i risultati da Federgolf…';
+wait.textContent = 'HCP Tracker: leggo i risultati da Federgolf…';
 wait.style.cssText = 'position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:2147483647;background:#1f1e1c;color:#fff;font:600 15px/1.4 -apple-system,Segoe UI,Roboto,sans-serif;padding:10px 18px;border-radius:99px;box-shadow:0 6px 20px rgba(0,0,0,.25)';
 (document.body || document.documentElement).appendChild(wait);
 } catch (e) {}
@@ -108,13 +108,14 @@ try { dati = await carica(); salva(dati); }
 catch (e) {
 dati = salvati();
 if (wait) wait.remove();
-if (!dati) { alert('Accedi all\'area riservata Federgolf con le tue credenziali, poi clicca di nuovo "Aggiorna HCP".'); return; }
-avviso = 'Non risulti collegato a Federgolf: stai vedendo i dati salvati il ' + new Date(dati.salvato).toLocaleDateString('it-IT') + '. Accedi e clicca di nuovo "Aggiorna HCP" per aggiornarli.';
+if (!dati) { alert('Accedi all\'area riservata Federgolf con le tue credenziali, poi tocca di nuovo "HCP Tracker".'); return; }
+avviso = 'Non risulti collegato a Federgolf: stai vedendo i dati salvati il ' + new Date(dati.salvato).toLocaleDateString('it-IT') + '. Accedi e tocca di nuovo "HCP Tracker" per aggiornarli.';
 }
 var tutte = dati.tutte.slice().sort(function (a, b) { return a.data.localeCompare(b.data) || a.giro - b.giro; });
 var gare = tutte.filter(function (r) { return r.anno >= DAL_ANNO; });
 if (!gare.length) { alert('Nessun risultato gara trovato dal ' + DAL_ANNO + '.'); return; }
-var titolo = 'Gare & HCP ' + (dati.nome || dati.cognome || 'Golf');
+var titolo = 'HCP Tracker', chi = [dati.nome, dati.cognome].filter(Boolean).join(' ');
+var ICONA = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%232f6f4f%22/%3E%3Cellipse cx=%2234%22 cy=%2251%22 rx=%2222%22 ry=%226%22 fill=%22%233d8a62%22/%3E%3Cellipse cx=%2238%22 cy=%2251%22 rx=%224.2%22 ry=%221.7%22 fill=%22%23173a29%22/%3E%3Crect x=%2237%22 y=%2211%22 width=%222.4%22 height=%2240%22 rx=%221.2%22 fill=%22%23fff%22/%3E%3Cpath d=%22M39.4 11.5 54 16.8 39.4 22.1z%22 fill=%22%23f2b84b%22/%3E%3Ccircle cx=%2221%22 cy=%2242%22 r=%228.5%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2218.2%22 cy=%2240.2%22 r=%221.2%22 fill=%22%231f1e1c%22/%3E%3Ccircle cx=%2223.8%22 cy=%2240.2%22 r=%221.2%22 fill=%22%231f1e1c%22/%3E%3Cpath d=%22M17.6 44q3.4 3 6.8 0%22 stroke=%22%231f1e1c%22 stroke-width=%221.5%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3Ccircle cx=%2215.5%22 cy=%2245.5%22 r=%22.8%22 fill=%22%23d9d5cc%22/%3E%3Ccircle cx=%2226.6%22 cy=%2245.3%22 r=%22.8%22 fill=%22%23d9d5cc%22/%3E%3Ccircle cx=%2221%22 cy=%2235.6%22 r=%22.8%22 fill=%22%23d9d5cc%22/%3E%3C/svg%3E';
 var isV = function (r) { return r.valida !== 'No' && r.sd != null; };
 var inMedia = function (r) { return isV(r) && String(r.stableford).toUpperCase() !== 'NR'; };
 var annoMax = Math.max.apply(null, gare.map(function (r) { return r.anno; }));
@@ -294,7 +295,7 @@ return '<section class="card" id="sim"><div><h2 class="ct">Simulatore HCP</h2><p
 }
 function htmlNote() {
 var it = [
-['Fonte e aggiornamento', 'Area riservata Federgolf, sezione Risultati, letta dal pulsante "Aggiorna HCP" e salvata solo su questo dispositivo; ultima gara caricata il ' + dIt(ultimo.data) + '. Dopo nuove gare tocca "Aggiorna".'],
+['Fonte e aggiornamento', 'Area riservata Federgolf, sezione Risultati, letta dal pulsante "HCP Tracker" e salvata solo su questo dispositivo; ultima gara caricata il ' + dIt(ultimo.data) + '. Dopo nuove gare tocca "Aggiorna".'],
 ['Colpi sul par', 'Media di lordo corretto meno par del campo, sulle gare valide degli ultimi 3 anni (anno in corso compreso). Un giro di 9 buche conta rispetto al suo par.'],
 ['Media lorda', 'Lordo corretto (AGS) delle sole gare valide a 18 buche.'],
 ['Gare NR', 'Le gare con risultato NR restano nel conteggio delle gare e nello storico HCP, ma sono escluse dalle medie di lordo, colpi sul par e SD.'],
@@ -404,8 +405,8 @@ var last = pts[pts.length - 1];
 var maxP = pts.reduce(function (a, p) { return p.hcp >= a.hcp ? p : a; }, pts[0]);
 var minP = pts.reduce(function (a, p) { return p.hcp < a.hcp ? p : a; }, pts[0]);
 s += '<circle cx="' + X(pts[0].data) + '" cy="' + yb + '" r="2.5" class="sp-dot0"/>';
-if (maxP !== last && maxP.hcp > base) s += '<circle cx="' + X(maxP.data) + '" cy="' + Y(maxP.hcp) + '" r="2.5" class="sp-bd"/><text x="' + X(maxP.data) + '" y="' + (Y(maxP.hcp) - 6) + '" text-anchor="middle" class="t-xs">max ' + f1(maxP.hcp) + '</text>';
-if (minP !== pts[0] && minP !== last && minP.hcp < base) s += '<circle cx="' + X(minP.data) + '" cy="' + Y(minP.hcp) + '" r="2.5" class="sp-gd"/><text x="' + X(minP.data) + '" y="' + (Y(minP.hcp) + 13) + '" text-anchor="middle" class="t-xs">min ' + f1(minP.hcp) + '</text>';
+if (maxP !== last && maxP.hcp !== last.hcp && maxP.hcp > base) s += '<circle cx="' + X(maxP.data) + '" cy="' + Y(maxP.hcp) + '" r="2.5" class="sp-bd"/><text x="' + X(maxP.data) + '" y="' + (Y(maxP.hcp) - 6) + '" text-anchor="middle" class="t-xs">max ' + f1(maxP.hcp) + '</text>';
+if (minP !== pts[0] && minP !== last && minP.hcp !== last.hcp && minP.hcp < base) s += '<circle cx="' + X(minP.data) + '" cy="' + Y(minP.hcp) + '" r="2.5" class="sp-gd"/><text x="' + X(minP.data) + '" y="' + (Y(minP.hcp) + 13) + '" text-anchor="middle" class="t-xs">min ' + f1(minP.hcp) + '</text>';
 s += '<circle cx="' + X(last.data) + '" cy="' + Y(last.hcp) + '" r="4" class="' + (last.hcp > base ? 'sp-bd' : last.hcp < base ? 'sp-gd' : 'sp-dot0') + '"/><text x="' + (X(last.data) + 7) + '" y="' + (Y(last.hcp) + 4) + '" class="t-strong">' + f1(last.hcp) + '</text>';
 var mesi = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 s += '<text x="' + mL + '" y="' + (H - 3) + '" class="t-xs">gen</text><text x="' + (W - mR) + '" y="' + (H - 3) + '" text-anchor="end" class="t-xs">' + mesi[new Date(t1).getUTCMonth()] + '</text>';
@@ -522,11 +523,12 @@ var css = [
 '.an-k{display:flex;flex-wrap:wrap;gap:8px}.ak{display:flex;flex-direction:column;gap:1px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);flex:1 1 12rem;max-width:20rem}.akv{font-family:Georgia,serif;font-size:20px;line-height:1.1}.ak .sub{font-size:11px}',
 '#se-t tr.clk{cursor:pointer}#se-t tr.clk:hover td{background:color-mix(in srgb,var(--fg) 5%,transparent)}#se-t tr.rec td.gi{color:var(--ok)}#se-t tr.live td{background:color-mix(in srgb,var(--ok) 9%,transparent)}.chev{display:inline-block;width:1em;font-size:10px;color:var(--mut)}#se-t tr.det>td{padding:0 8px 8px 26px;white-space:normal;background:color-mix(in srgb,var(--fg) 3%,transparent)}',
 '.sub-t{width:100%;border-collapse:collapse;font-size:11px}.sub-t th,.sub-t td{padding:3px 6px;position:static;background:none}.sub-t tr:last-child td{border-bottom:0}',
+'.hd{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;flex:none;border-radius:11px}.who{color:var(--mut)}',
 '@media(max-width:640px){.hs{display:none}.upd{align-items:flex-start;max-width:none}.upd .note{text-align:left}.btns{justify-content:flex-start}.ttl{font-size:26px}.big{font-size:34px}}'
 ].join('\n');
 var ora = new Date(dati.salvato);
-var html = '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(titolo) + '</title><style>' + css + '</style></head><body><div class="gh" id="gh">' +
-'<header class="bar"><div style="display:flex;flex-direction:column;gap:6px;max-width:62rem"><h1 class="serif ttl">' + esc(titolo) + '</h1>' +
+var html = '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(titolo + (chi ? ' · ' + chi : '')) + '</title><link rel="icon" href="' + ICONA + '"><style>' + css + '</style></head><body><div class="gh" id="gh">' +
+'<header class="bar"><div style="display:flex;flex-direction:column;gap:6px;max-width:62rem"><h1 class="serif ttl hd"><img src="' + ICONA + '" alt="" class="logo"><span>' + esc(titolo) + (chi ? '<span class="who"> · ' + esc(chi) + '</span>' : '') + '</span></h1>' +
 '<p class="lead">Nel <b>' + S.anno + '</b> hai giocato <b>' + S.gare + '</b> gare, <b>' + S.valide + '</b> valide per l\'handicap. L\'exact HCP è passato da <b>' + f1(S.hcp_inizio) + '</b> a <b>' + f1(S.hcp_fine) + '</b> (<b class="' + (S.delta < 0 ? 'good' : S.delta > 0 ? 'bad' : '') + '">' + sg(S.delta) + '</b>), con uno score medio di <b>' + f1(S.score) + '</b> a par 72 e un SD medio di <b>' + f2(S.sdm) + '</b>.</p></div>' +
 '<div class="upd"><div class="btns"><button class="btn" id="b-agg" type="button">Aggiorna</button><button class="btn sec" id="b-fig" type="button">Torna a Federgolf</button></div><span class="note">Dati al ' + dIt(ultimo.data) + ' · letti il ' + ora.toLocaleDateString('it-IT') + ' alle ' + ora.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }) + '</span></div></header>' +
 (avviso ? '<div class="warn">' + esc(avviso) + '</div>' : '') +
