@@ -325,7 +325,7 @@ return '<section class="page" id="analisi" hidden><div class="an-row">' +
 '<section class="card cs"><div><h2 class="ct">Serie consecutive</h2><p class="cn">Giri validi a 18 buche consecutivi sotto la soglia rispetto al par (le 9 buche non contano e non interrompono). Tocca una serie per vedere i giri.</p></div>' +
 '<div class="chips" id="se-ch">' + soglie.lista.map(function (s, i) { return '<button class="chip" type="button" data-s="' + s.s + '" aria-pressed="' + (i === 0) + '">' + s.l + '</button>'; }).join('') + '</div>' + ad +
 '<div class="an-k"><div class="ak"><span class="lbl">Serie più lunga</span><span class="akv" id="se-max">—</span><span class="sub" id="se-maxs"></span></div><div class="ak"><span class="lbl">Serie in corso</span><span class="akv" id="se-ora">—</span><span class="sub" id="se-oras"></span></div></div>' +
-'<div class="tw"><table class="an-t" id="se-t"><thead><tr><th class="n">Giri</th><th>Dal</th><th>Al</th><th class="n">Media sul par</th><th class="n">Miglior lordo</th></tr></thead><tbody></tbody></table></div></section>' +
+'<div class="tw"><table class="an-t" id="se-t"><thead><tr><th class="n">Giri</th><th>Dal</th><th>Al</th><th class="n">Media sul par</th><th class="n hs">Miglior lordo</th></tr></thead><tbody></tbody></table></div></section>' +
 '</div></section>';
 }
 function tipAttr(lines) { return ' data-tip="' + esc(lines.join('\n')) + '"'; }
@@ -686,7 +686,7 @@ var lunghe = rows.filter(function (r) { return r.giri >= (max >= 2 ? 2 : 1); });
 if (!lunghe.length) { tb.innerHTML = '<tr><td colspan="5" class="vu">' + (max ? 'Nessuna serie di almeno 2 giri ' + nome + '.' : 'Nessun giro ' + nome + ' finora.') + '</td></tr>'; return; }
 tb.innerHTML = lunghe.map(function (r) {
 var ap = !!seSt.open[r.key];
-var s = '<tr class="clk' + (r.inCorso ? ' live' : '') + (r.giri === max ? ' rec' : '') + '" data-k="' + esc(r.key) + '" tabindex="0" role="button" aria-expanded="' + ap + '"><td class="n b gi"><span class="chev">' + (ap ? '▾' : '▸') + '</span> ' + r.giri + '</td><td>' + r.dal + '</td><td>' + r.al + (r.inCorso ? ' <span class="badge">in corso</span>' : '') + '</td><td class="n">' + sg(r.media) + '</td><td class="n">' + r.miglior + '</td></tr>';
+var s = '<tr class="clk' + (r.inCorso ? ' live' : '') + (r.giri === max ? ' rec' : '') + '" data-k="' + esc(r.key) + '" tabindex="0" role="button" aria-expanded="' + ap + '"><td class="n b gi"><span class="chev">' + (ap ? '▾' : '▸') + '</span> ' + r.giri + '</td><td>' + r.dal + '</td><td>' + r.al + (r.inCorso ? ' <span class="badge">in corso</span>' : '') + '</td><td class="n">' + sg(r.media) + '</td><td class="n hs">' + r.miglior + '</td></tr>';
 if (ap) s += '<tr class="det"><td colspan="5"><table class="sub-t"><thead><tr><th>Data</th><th>Campo</th><th class="n">Lordo</th><th class="n">Sul par</th><th class="n">SD</th></tr></thead><tbody>' +
 r.det.map(function (d) { return '<tr><td>' + d.data + '</td><td>' + esc(d.circolo) + '</td><td class="n">' + d.lordo + '</td><td class="n">' + d.sp + '</td><td class="n">' + fsd(d.sd) + '</td></tr>'; }).join('') + '</tbody></table></td></tr>';
 return s;
